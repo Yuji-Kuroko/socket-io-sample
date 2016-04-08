@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head>
+  <title>child</title>
+
+</head>
+<body>
+<h1>child</h1>
+
+<div>
+  <label for="">bloadcast</label>
+  <input id="bloadcast-input" type="text">
+  <button emit="bloadcast" send-target="#bloadcast-input">send</button>
+</div>
+
+<div>
+  <label for="">parent</label>
+  <input id="parent-input" type="text">
+  <button emit="parent" send-target="#parent-input">send</button>
+</div>
+
+<div>
+  <label for="">children</label>
+  <input id="children-input" type="text">
+  <button emit="children" send-target="#children-input">send</button>
+</div>
+
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+<script>
+  var socket = io('http://localhost:3000/game/child');
+
+  socket.on('password', function(res) {
+    if (res == true) {
+      // login OK
+      console.log('success password');
+    } else {
+      console.log('failed password');
+    }
+  });
+
+  socket.on('children', function(message) {
+    console.log('children: '+message);
+  });
+
+  socket.on('bloadcast', function(message) {
+    console.log('bloadcast: '+message);
+  });
+
+  socket.emit('password', 'hogehoge');
+
+  $(function() {
+    $("[emit]").on('click', function(){
+      var emit = $(this).attr('emit');
+      var target_input = $(this).attr('send-target');
+      var message = $(target_input).val();
+      console.log('emit: '+emit+', message: '+message);
+      socket.emit(emit, message);
+    });
+  });
+
+</script>
+</body>
